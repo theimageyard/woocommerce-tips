@@ -9,7 +9,8 @@
 //      you could use 'Photoshoots' if you just sold Photographs etc.
 //      or 'Ranges' if that is better than Product Categories
 // ------------------------------------------------------------------------------------
-//
+// Author: Jon Dennis
+// AuthorURI: http://www.theimageyard.co.uk
 
 add_filter( 'woocommerce_taxonomy_args_product_cat', 'my_taxonomy_args_product_cat' );
 
