@@ -1,0 +1,66 @@
+// Add a custom menu to the Admin Bar instead of the boring Visit Site (and Visit Store if you use WooCommerce).
+// Also opens the links in a new window which is even more helpful.
+//
+// Author: Jon Dennis
+// AuthorURI: http://www.theimageyard.co.uk
+
+if ( is_admin() ) { 
+
+	add_action( 'wp_before_admin_bar_render', 'remove_admin_bar_links' );
+	
+	function remove_admin_bar_links() {
+		
+		global $wp_admin_bar;
+		
+		// remove existing links
+		
+		$wp_admin_bar->remove_menu('view-site'); 
+		$wp_admin_bar->remove_menu('view-store');
+		
+		// re-add the home page link, but with a new window target
+		
+		$wp_admin_bar->add_node( array(
+			'parent' => 'site-name',
+			'id'     => 'view-site',
+			'title'  => 'Visit - Home Page',
+			'href'   => '/',
+			'meta'	 => array( 'target' => 'blank' )
+		) );
+		
+		// Get a custom menu of your choice and loop through each item and add a link to the WP Admin bar.
+		// Check if there are any menus first using get_nav_menu_locations()
+		
+		if ( ( $locations = get_nav_menu_locations() ) ) {
+			
+			$menu_items = wp_get_nav_menu_items( 35 ); // get your chosen menu by ID
+			
+			$count = 1;
+		
+			foreach ( (array) $menu_items as $key => $menu_item ) {
+				
+				if ( $menu_item->menu_item_parent == 0 ) {
+				
+					$wp_admin_bar->add_node( array(
+						'parent' => 'site-name',
+						'id'     => 'menu-item-'.$count,
+						'title'  => 'Visit - ' . $menu_item->title,
+						'href'   => $menu_item->url,
+						'meta'	 => array( 'target' => 'blank' )
+					) );
+				
+				}
+				
+				$count++;
+			}
+		}
+		
+		// then finally add a dummy entry that lets the user know they don't need to keep using right-click on the links
+		
+		$wp_admin_bar->add_node( array(
+			'parent' => 'site-name',
+			'id'     => 'view-description',
+			'title'  => '↗ all open in new tab or window'
+		) );	
+		
+	}
+} // end if is_admin()
